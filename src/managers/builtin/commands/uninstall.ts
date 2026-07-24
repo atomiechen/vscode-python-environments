@@ -32,7 +32,7 @@ export class UvUninstallCommand extends UninstallCommand {
     }
 
     protected buildCommand(executeArgs: UninstallExecuteArgs): string[] {
-        const args = ['pip', 'uninstall', '-y', '--python', this.pythonExecutable];
+        const args = ['pip', 'uninstall', '--python', this.pythonExecutable];
         args.push(...executeArgs.packages.map((pkg) => pkg.packageName));
         return args;
     }
