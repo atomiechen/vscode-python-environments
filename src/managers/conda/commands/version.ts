@@ -5,12 +5,8 @@ import { runCondaExecutable } from '../condaUtils';
 
 /**
  * Conda version command.
- *
- * Parsed Command: `conda --version`
- *
- * Official Documentation: https://conda.io/projects/conda/en/latest/commands.html
- * The `conda --version` command displays the current version of conda.
- * Output format: "conda X.Y.Z" where X.Y.Z is the semantic version.
+ * Parsed command: `conda --version`
+ * Official documentation: https://conda.io/projects/conda/en/latest/commands.html
  */
 export class CondaVersionCommand extends VersionCommand {
     constructor(options: CommandConstructorOptions) {

@@ -10,15 +10,9 @@ export interface CondaInstallExecuteArgs extends InstallExecuteArgs {
 
 /**
  * Conda install command.
- *
- * Parsed Command: `conda install -y -p <environment_path> <package>`
- * Parsed Command (upgrade): `conda update -y -p <environment_path> <package>`
- *
- * Official Documentation: https://conda.io/projects/conda/en/latest/commands/install.html
- * The `conda install` command installs packages in the specified conda environment.
- * The `-y` flag automatically confirms the installation without prompting.
- * The `-p` flag targets a specific environment by prefix path.
- * Uses `conda update` when upgrade is requested.
+ * Parsed command: `conda install -y -p <environment_path> <package>`
+ * Parsed command (upgrade): `conda update -y -p <environment_path> <package>`
+ * Official documentation: https://conda.io/projects/conda/en/latest/commands/install.html
  */
 export class CondaInstallCommand extends InstallCommand {
     constructor(options: CommandConstructorOptions) {

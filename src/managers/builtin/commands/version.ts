@@ -5,12 +5,8 @@ import { runPython, runUV } from '../helpers';
 
 /**
  * Pip version command.
- *
- * Parsed Command: `python -m pip --version`
- *
- * Official Documentation: https://pip.pypa.io/en/stable/cli/pip/
- * The `pip --version` command displays the current version of pip.
- * Output format: "pip X.Y.Z from /path/to/pip (python X.Y)"
+ * Parsed command: `python -m pip --version`
+ * Official documentation: https://pip.pypa.io/en/stable/cli/pip/
  */
 export class PipVersionCommand extends VersionCommand {
     constructor(options: CommandConstructorOptions) {
@@ -47,12 +43,8 @@ export class PipVersionCommand extends VersionCommand {
 
 /**
  * UV version command.
- *
- * Parsed Command: `uv --version`
- *
- * Official Documentation: https://docs.astral.sh/uv/
- * The `uv --version` command displays the current version of UV.
- * Output format: "uv X.Y.Z"
+ * Parsed command: `uv --version`
+ * Official documentation: https://docs.astral.sh/uv/
  */
 export class UvVersionCommand extends VersionCommand {
     constructor(options: CommandConstructorOptions) {

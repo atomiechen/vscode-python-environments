@@ -7,13 +7,8 @@ export interface PoetryShowTopLevelExecuteArgs extends BaseExecuteArgs {
 
 /**
  * Poetry show --top-level command.
- *
- * Parsed Command: `poetry show --no-ansi --top-level`
- *
- * Official Documentation: https://python-poetry.org/docs/cli/#show
- * The `poetry show` command with `--top-level` flag displays only the top-level (directly installed)
- * packages. The `--no-ansi` flag disables ANSI color output for easier parsing.
- * This is useful for determining which packages were explicitly installed vs. dependencies.
+ * Parsed command: `poetry show --no-ansi --top-level`
+ * Official documentation: https://python-poetry.org/docs/cli/#show
  */
 export class PoetryShowTopLevelCommand extends ListDirectNamesCommand {
     constructor(options: CommandConstructorOptions) {

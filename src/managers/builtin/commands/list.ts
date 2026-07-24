@@ -4,12 +4,8 @@ import { runPython, runUV } from '../helpers';
 
 /**
  * Pip list command.
- *
- * Parsed Command: `python -m pip list --format=json`
- *
- * Official Documentation: https://pip.pypa.io/en/stable/cli/pip_list/
- * The `pip list` command shows all installed packages in the current environment.
- * The `--format=json` flag outputs the list in JSON format for structured parsing.
+ * Parsed command: `python -m pip list --format=json`
+ * Official documentation: https://pip.pypa.io/en/stable/cli/pip_list/
  */
 export class PipListCommand extends ListCommand {
     constructor(options: CommandConstructorOptions) {
@@ -63,13 +59,8 @@ export class PipListCommand extends ListCommand {
 
 /**
  * UV list command.
- *
- * Parsed Command: `uv pip list --format=json --python <path>`
- *
- * Official Documentation: https://docs.astral.sh/uv/pip/
- * The `uv pip list` command shows all installed packages via UV's pip interface.
- * The `--python` flag specifies the target Python interpreter.
- * The `--format=json` flag outputs the list in JSON format for structured parsing.
+ * Parsed command: `uv pip list --format=json --python <path>`
+ * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvListCommand extends ListCommand {
     constructor(options: CommandConstructorOptions) {

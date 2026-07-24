@@ -4,12 +4,8 @@ import { processEditableInstallArgs } from '../utils';
 
 /**
  * Pip install command.
- *
- * Parsed Command: `python -m pip install [--upgrade] [--index-url <url>] <package>`
- *
- * Official Documentation: https://pip.pypa.io/en/stable/cli/pip_install/
- * The `pip install` command installs packages from the Python Package Index (PyPI).
- * Supports version pinning via `package==version` syntax and index URL configuration.
+ * Parsed command: `python -m pip install [--upgrade] <package>`
+ * Official documentation: https://pip.pypa.io/en/stable/cli/pip_install/
  */
 export class PipInstallCommand extends InstallCommand {
     constructor(options: CommandConstructorOptions) {
@@ -38,13 +34,8 @@ export class PipInstallCommand extends InstallCommand {
 
 /**
  * UV install command.
- *
- * Parsed Command: `uv pip install --python <path> [--upgrade] [--index-url <url>] <package>`
- *
- * Official Documentation: https://docs.astral.sh/uv/pip/
- * The `uv pip install` command is UV's high-performance Python package installer.
- * UV is a Rust-based pip replacement that's faster than traditional pip.
- * The `--python` flag specifies the target Python interpreter.
+ * Parsed command: `uv pip install --python <path> [--upgrade] <package>`
+ * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvInstallCommand extends InstallCommand {
     constructor(options: CommandConstructorOptions) {

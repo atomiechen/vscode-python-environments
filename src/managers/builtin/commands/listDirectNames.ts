@@ -3,13 +3,8 @@ import { runPython, runUV } from '../helpers';
 
 /**
  * Pip list direct names command.
- *
- * Parsed Command: `python -m pip list --format=json --not-required`
- *
- * Official Documentation: https://pip.pypa.io/en/stable/cli/pip_list/
- * The `pip list --not-required` command lists only top-level (directly installed) packages.
- * Excludes transitive dependencies that are installed as requirements of other packages.
- * The `--format=json` flag outputs results in JSON format for structured parsing.
+ * Parsed command: `python -m pip list --format=json --not-required`
+ * Official documentation: https://pip.pypa.io/en/stable/cli/pip_list/
  */
 export class PipListDirectNamesCommand extends ListDirectNamesCommand {
     constructor(options: CommandConstructorOptions) {
@@ -55,14 +50,8 @@ export class PipListDirectNamesCommand extends ListDirectNamesCommand {
 
 /**
  * UV list direct names command.
- *
- * Parsed Command: `uv pip list --format=json --not-required --python <path>`
- *
- * Official Documentation: https://docs.astral.sh/uv/pip/
- * The `uv pip list --not-required` command lists only top-level (directly installed) packages.
- * Excludes transitive dependencies that are installed as requirements of other packages.
- * The `--format=json` flag outputs results in JSON format for structured parsing.
- * The `--python` flag specifies the target Python interpreter.
+ * Parsed command: `uv pip list --format=json --not-required --python <path>`
+ * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvListDirectNamesCommand extends ListDirectNamesCommand {
     constructor(options: CommandConstructorOptions) {

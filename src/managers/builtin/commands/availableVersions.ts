@@ -7,13 +7,8 @@ import { runPython, runUV } from '../helpers';
 
 /**
  * Pip available versions command.
- *
- * Parsed Command: `python -m pip index versions <package> --json --python-version <version>`
- *
- * Official Documentation: https://pip.pypa.io/en/stable/cli/pip_index/
- * The `pip index versions` command lists all available versions of a package on PyPI.
- * The `--python-version` flag filters versions compatible with the specified Python version.
- * The `--json` flag outputs results in JSON format for structured parsing.
+ * Parsed command: `python -m pip index versions <package> --json --python-version <version>`
+ * Official documentation: https://pip.pypa.io/en/stable/cli/pip_index/
  */
 export class PipAvailableVersionsCommand extends AvailableVersionsCommand {
     constructor(options: CommandConstructorOptions) {
@@ -63,13 +58,8 @@ export class PipAvailableVersionsCommand extends AvailableVersionsCommand {
 
 /**
  * UV available versions command.
- *
- * Parsed Command: `uv pip index versions <package> --json --python-version <version>`
- *
- * Official Documentation: https://docs.astral.sh/uv/pip/
- * The `uv pip index versions` command lists all available versions of a package.
- * The `--python-version` flag filters versions compatible with the specified Python version.
- * The `--json` flag outputs results in JSON format for structured parsing.
+ * Parsed command: `uv pip index versions <package> --json --python-version <version>`
+ * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvAvailableVersionsCommand extends AvailableVersionsCommand {
     constructor(options: CommandConstructorOptions) {

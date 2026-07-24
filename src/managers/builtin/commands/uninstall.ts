@@ -3,12 +3,8 @@ import { runPython, runUV } from '../helpers';
 
 /**
  * Pip uninstall command.
- *
- * Parsed Command: `python -m pip uninstall -y <package>`
- *
- * Official Documentation: https://pip.pypa.io/en/stable/cli/pip_uninstall/
- * The `pip uninstall` command uninstalls installed packages from the current environment.
- * The `-y` flag automatically confirms the uninstallation without prompting.
+ * Parsed command: `python -m pip uninstall -y <package>`
+ * Official documentation: https://pip.pypa.io/en/stable/cli/pip_uninstall/
  */
 export class PipUninstallCommand extends UninstallCommand {
     constructor(options: CommandConstructorOptions) {
@@ -27,13 +23,8 @@ export class PipUninstallCommand extends UninstallCommand {
 
 /**
  * UV uninstall command.
- *
- * Parsed Command: `uv pip uninstall -y --python <path> <package>`
- *
- * Official Documentation: https://docs.astral.sh/uv/pip/
- * The `uv pip uninstall` command removes packages from the Python environment via UV.
- * The `-y` flag automatically confirms uninstallation without prompting.
- * The `--python` flag specifies the target Python interpreter.
+ * Parsed command: `uv pip uninstall -y --python <path> <package>`
+ * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvUninstallCommand extends UninstallCommand {
     constructor(options: CommandConstructorOptions) {

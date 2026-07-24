@@ -8,12 +8,8 @@ export interface PoetryShowExecuteArgs extends BaseExecuteArgs {
 
 /**
  * Poetry show command.
- *
- * Parsed Command: `poetry show --no-ansi`
- *
- * Official Documentation: https://python-poetry.org/docs/cli/#show
- * The `poetry show` command displays information about the installed packages.
- * The `--no-ansi` flag disables ANSI color output for easier parsing.
+ * Parsed command: `poetry show --no-ansi`
+ * Official documentation: https://python-poetry.org/docs/cli/#show
  */
 export class PoetryShowCommand extends ListCommand {
     constructor(options: CommandConstructorOptions) {
