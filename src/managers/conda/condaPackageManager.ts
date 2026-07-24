@@ -24,7 +24,7 @@ import {
 import { showErrorMessageWithLogs } from '../../common/errors/utils';
 import { CondaStrings } from '../../common/localize';
 import { withProgress } from '../../common/window.apis';
-import { CommandConstructorOptions } from '../base/commands/index';
+
 import { parsePackageSpecs } from '../builtin/utils';
 import { updatePackagesAndNotify } from '../common/packageChanges';
 import {
@@ -73,30 +73,34 @@ export class CondaPackageManager implements PackageManager, Disposable {
 
         try {
             // Centralize command options for install/uninstall operations
-            const manageCommandOptions: CommandConstructorOptions = {
-                pythonExecutable: 'conda',
-                log: this.log,
-            };
+            const environmentPath = environment.environmentPath.fsPath;
 
             // Execute uninstall if needed
             if (toUninstall.length > 0) {
-                const uninstallCmd = new CondaUninstallCommand(manageCommandOptions);
+                const uninstallCmd = new CondaUninstallCommand({
+                    pythonExecutable: 'conda',
+                    condaEnvironmentPath: environmentPath,
+                    log: this.log,
+                });
                 const packages = parsePackageSpecs(toUninstall);
                 await uninstallCmd.executeWithProgress(
-                    { packages, environmentPath: environment.environmentPath.fsPath, showProgress: true },
+                    { packages, showProgress: true },
                     CondaStrings.condaInstallingPackages,
                 );
             }
 
             // Execute install if needed
             if (toInstall.length > 0) {
-                const installCmd = new CondaInstallCommand(manageCommandOptions);
+                const installCmd = new CondaInstallCommand({
+                    pythonExecutable: 'conda',
+                    condaEnvironmentPath: environmentPath,
+                    log: this.log,
+                });
                 const packages = parsePackageSpecs(toInstall);
                 await installCmd.executeWithProgress(
                     {
                         packages,
                         upgrade: options.upgrade,
-                        environmentPath: environment.environmentPath.fsPath,
                         showProgress: true,
                     },
                     CondaStrings.condaInstallingPackages,
@@ -140,9 +144,10 @@ export class CondaPackageManager implements PackageManager, Disposable {
         if (options?.skipCache || !this.packages.has(environment.envId.id)) {
             const listCmd = new CondaListCommand({
                 pythonExecutable: 'conda',
+                condaEnvironmentPath: environment.environmentPath.fsPath,
                 log: this.log,
             });
-            const data = await listCmd.execute({ environmentPath: environment.environmentPath.fsPath });
+            const data = await listCmd.execute();
             const packages = (data ?? []).map((pkg) => this.api.createPackageItem(pkg, environment, this));
             this.packages.set(environment.envId.id, packages);
             return packages;

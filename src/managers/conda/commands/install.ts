@@ -1,12 +1,6 @@
-import { CommandConstructorOptions, InstallCommand, type InstallExecuteArgs } from '../../base/commands/index';
+import { InstallCommand, type InstallExecuteArgs } from '../../base/commands/index';
 import { runCondaExecutable } from '../condaUtils';
-
-/**
- * Conda install command execute arguments (includes the target environment path).
- */
-export interface CondaInstallExecuteArgs extends InstallExecuteArgs {
-    environmentPath: string;
-}
+import { CondaCommandConstructorOptions } from './condaCommandOptions';
 
 /**
  * Conda install command.
@@ -15,17 +9,15 @@ export interface CondaInstallExecuteArgs extends InstallExecuteArgs {
  * Official documentation: https://conda.io/projects/conda/en/latest/commands/install.html
  */
 export class CondaInstallCommand extends InstallCommand {
-    constructor(options: CommandConstructorOptions) {
+    private readonly condaEnvironmentPath: string;
+
+    constructor(options: CondaCommandConstructorOptions) {
         super(options);
+        this.condaEnvironmentPath = options.condaEnvironmentPath;
     }
 
     protected buildCommand(executeArgs: InstallExecuteArgs): string[] {
-        const args = [executeArgs.upgrade ? 'update' : 'install', '-y'];
-
-        const { environmentPath } = executeArgs as CondaInstallExecuteArgs;
-        if (environmentPath) {
-            args.push('-p', environmentPath);
-        }
+        const args = [executeArgs.upgrade ? 'update' : 'install', '-y', '-p', this.condaEnvironmentPath];
 
         args.push(
             ...executeArgs.packages.map((pkg) => {

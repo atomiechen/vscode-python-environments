@@ -1,12 +1,6 @@
-import { CommandConstructorOptions, UninstallCommand, type UninstallExecuteArgs } from '../../base/commands/index';
+import { UninstallCommand, type UninstallExecuteArgs } from '../../base/commands/index';
 import { runCondaExecutable } from '../condaUtils';
-
-/**
- * Conda uninstall command execute arguments (includes the target environment path).
- */
-export interface CondaUninstallExecuteArgs extends UninstallExecuteArgs {
-    environmentPath: string;
-}
+import { CondaCommandConstructorOptions } from './condaCommandOptions';
 
 /**
  * Conda uninstall command.
@@ -14,17 +8,15 @@ export interface CondaUninstallExecuteArgs extends UninstallExecuteArgs {
  * Official documentation: https://conda.io/projects/conda/en/latest/commands/remove.html
  */
 export class CondaUninstallCommand extends UninstallCommand {
-    constructor(options: CommandConstructorOptions) {
+    private readonly condaEnvironmentPath: string;
+
+    constructor(options: CondaCommandConstructorOptions) {
         super(options);
+        this.condaEnvironmentPath = options.condaEnvironmentPath;
     }
 
     protected buildCommand(executeArgs: UninstallExecuteArgs): string[] {
-        const args = ['remove', '-y'];
-
-        const { environmentPath } = executeArgs as CondaUninstallExecuteArgs;
-        if (environmentPath) {
-            args.push('-p', environmentPath);
-        }
+        const args = ['remove', '-y', '-p', this.condaEnvironmentPath];
 
         args.push(...executeArgs.packages.map((pkg) => pkg.packageName));
         return args;
