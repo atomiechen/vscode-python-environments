@@ -39,7 +39,7 @@ import {
     UvVersionCommand,
 } from './commands/index';
 import { getWorkspacePackagesToInstall } from './pipUtils';
-import { normalizePackageName, parsePackageSpecs } from './utils';
+import { parsePackageSpecs } from './utils';
 import { VenvManager } from './venvManager';
 
 export class PipPackageManager implements PackageManager, Disposable {
@@ -259,7 +259,6 @@ export class PipPackageManager implements PackageManager, Disposable {
             PipListDirectNamesCommand,
             UvListDirectNamesCommand,
         );
-        const data = await listDirectNamesCmd.execute();
-        return data ? new Set(data.map(normalizePackageName)) : undefined;
+        return listDirectNamesCmd.execute();
     }
 }

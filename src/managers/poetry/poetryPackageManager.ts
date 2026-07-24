@@ -23,7 +23,7 @@ import {
     PythonEnvironmentApi,
 } from '../../api';
 import { showErrorMessage, showInputBox, withProgress } from '../../common/window.apis';
-import { normalizePackageName, parsePackageSpecs } from '../builtin/utils';
+import { parsePackageSpecs } from '../builtin/utils';
 import { updatePackagesAndNotify } from '../common/packageChanges';
 import {
     PoetryAddCommand,
@@ -235,8 +235,7 @@ export class PoetryPackageManager implements PackageManager, Disposable {
                 log: this.log,
             });
             const cwd = await this.getPoetryCwdForEnvironment(environment);
-            const names = await showTopLevelCmd.execute({ cwd });
-            return names ? new Set(names.map(normalizePackageName)) : undefined;
+            return await showTopLevelCmd.execute({ cwd });
         } catch (err) {
             this.log.error(`Error fetching direct package names with Poetry: ${err}`);
             return undefined;

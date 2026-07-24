@@ -1,4 +1,5 @@
 import { CommandConstructorOptions, ListDirectNamesCommand, type BaseExecuteArgs } from '../../base/commands/index';
+import { normalizePackageName } from '../../builtin/utils';
 import { runPoetry } from '../poetryUtils';
 
 export interface PoetryShowTopLevelExecuteArgs extends BaseExecuteArgs {
@@ -19,7 +20,7 @@ export class PoetryShowTopLevelCommand extends ListDirectNamesCommand {
         return ['show', '--no-ansi', '--top-level'];
     }
 
-    async execute(executeArgs?: PoetryShowTopLevelExecuteArgs): Promise<string[]> {
+    async execute(executeArgs?: PoetryShowTopLevelExecuteArgs): Promise<Set<string>> {
         const args = this.buildCommand();
         const output = await runPoetry(args, executeArgs?.cwd, this.log, executeArgs?.cancellationToken);
 
@@ -28,10 +29,11 @@ export class PoetryShowTopLevelCommand extends ListDirectNamesCommand {
                 .split('\n')
                 .map((line) => line.trim())
                 .map((line) => line.match(/^([a-zA-Z0-9._-]+)/)?.[1] ?? '')
-                .filter((name) => !!name);
-            return names;
+                .filter((name) => !!name)
+                .map(normalizePackageName);
+            return new Set(names);
         } catch {
-            return [];
+            return new Set();
         }
     }
 }

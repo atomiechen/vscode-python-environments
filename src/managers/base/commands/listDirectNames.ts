@@ -7,5 +7,5 @@ import { BaseExecuteArgs, PackageManagerCommand } from './packageManagerCommand'
 export abstract class ListDirectNamesCommand extends PackageManagerCommand {
     protected static readonly configSection = 'listDirectNamesCommandArgs';
 
-    abstract execute(executeArgs?: BaseExecuteArgs): Promise<string[]>;
+    abstract execute(executeArgs?: BaseExecuteArgs): Promise<Set<string>>;
 }

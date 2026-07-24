@@ -1,5 +1,6 @@
 import { CommandConstructorOptions, ListDirectNamesCommand, type BaseExecuteArgs } from '../../base/commands/index';
 import { runPython, runUV } from '../helpers';
+import { normalizePackageName } from '../utils';
 
 /**
  * Pip list direct names command.
@@ -14,7 +15,7 @@ export class PipListDirectNamesCommand extends ListDirectNamesCommand {
         return ['-m', 'pip', 'list', '--format=json', '--not-required'];
     }
 
-    async execute(executeArgs?: BaseExecuteArgs): Promise<string[]> {
+    async execute(executeArgs?: BaseExecuteArgs): Promise<Set<string>> {
         const args = this.buildCommand();
 
         const output = await runPython(
@@ -31,14 +32,14 @@ export class PipListDirectNamesCommand extends ListDirectNamesCommand {
             packages = JSON.parse(output);
         } catch (e) {
             this.log?.error(`Failed to parse pip list output: ${e}`);
-            return [];
+            return new Set();
         }
         if (!Array.isArray(packages)) {
             this.log?.error('Invalid output from pip list command');
-            return [];
+            return new Set();
         }
 
-        return packages.filter(({ name }) => !!name).map(({ name }) => name);
+        return new Set(packages.filter(({ name }) => !!name).map(({ name }) => normalizePackageName(name)));
     }
 }
 
@@ -56,7 +57,7 @@ export class UvListDirectNamesCommand extends ListDirectNamesCommand {
         return ['pip', 'list', '--format=json', '--not-required', '--python', this.pythonExecutable];
     }
 
-    async execute(executeArgs?: BaseExecuteArgs): Promise<string[]> {
+    async execute(executeArgs?: BaseExecuteArgs): Promise<Set<string>> {
         const args = this.buildCommand();
 
         const output = await runUV(args, undefined, this.log, executeArgs?.cancellationToken, this.timeout);
@@ -66,13 +67,13 @@ export class UvListDirectNamesCommand extends ListDirectNamesCommand {
             packages = JSON.parse(output);
         } catch (e) {
             this.log?.error(`Failed to parse uv pip list output: ${e}`);
-            return [];
+            return new Set();
         }
         if (!Array.isArray(packages)) {
             this.log?.error('Invalid output from uv pip list command');
-            return [];
+            return new Set();
         }
 
-        return packages.filter(({ name }) => !!name).map(({ name }) => name);
+        return new Set(packages.filter(({ name }) => !!name).map(({ name }) => normalizePackageName(name)));
     }
 }
