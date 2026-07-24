@@ -191,7 +191,10 @@ export class PoetryPackageManager implements PackageManager, Disposable {
                 log: this.log,
             });
             const packages = parsePackageSpecs(options.uninstall);
-            await removeCmd.executeWithProgress({ packages, showProgress: true }, 'Managing packages with Poetry');
+            await withProgress(
+                { location: ProgressLocation.Notification, title: 'Managing packages with Poetry', cancellable: true },
+                (_progress, token) => removeCmd.execute({ packages, cancellationToken: token }),
+            );
         }
 
         // Handle installs
@@ -201,7 +204,10 @@ export class PoetryPackageManager implements PackageManager, Disposable {
                 log: this.log,
             });
             const packages = parsePackageSpecs(options.install);
-            await addCmd.executeWithProgress({ packages, showProgress: true }, 'Managing packages with Poetry');
+            await withProgress(
+                { location: ProgressLocation.Notification, title: 'Managing packages with Poetry', cancellable: true },
+                (_progress, token) => addCmd.execute({ packages, cancellationToken: token }),
+            );
         }
     }
 

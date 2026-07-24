@@ -284,7 +284,7 @@ export async function getWorkspacePackagesToInstall(
                 PipListCommand,
                 UvListCommand,
             );
-            const data = await listCmd.executeWithProgress<{ name: string }[]>({ showProgress: true });
+            const data = await listCmd.execute();
             installed = data?.map((pkg) => pkg.name);
         }
         common = mergePackages(common, installed ?? []);

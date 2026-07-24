@@ -83,9 +83,13 @@ export class CondaPackageManager implements PackageManager, Disposable {
                     log: this.log,
                 });
                 const packages = parsePackageSpecs(toUninstall);
-                await uninstallCmd.executeWithProgress(
-                    { packages, showProgress: true },
-                    CondaStrings.condaInstallingPackages,
+                await withProgress(
+                    {
+                        location: ProgressLocation.Notification,
+                        title: CondaStrings.condaInstallingPackages,
+                        cancellable: true,
+                    },
+                    (_progress, token) => uninstallCmd.execute({ packages, cancellationToken: token }),
                 );
             }
 
@@ -97,13 +101,14 @@ export class CondaPackageManager implements PackageManager, Disposable {
                     log: this.log,
                 });
                 const packages = parsePackageSpecs(toInstall);
-                await installCmd.executeWithProgress(
+                await withProgress(
                     {
-                        packages,
-                        upgrade: options.upgrade,
-                        showProgress: true,
+                        location: ProgressLocation.Notification,
+                        title: CondaStrings.condaInstallingPackages,
+                        cancellable: true,
                     },
-                    CondaStrings.condaInstallingPackages,
+                    (_progress, token) =>
+                        installCmd.execute({ packages, upgrade: options.upgrade, cancellationToken: token }),
                 );
             }
 

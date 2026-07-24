@@ -21,6 +21,7 @@ import {
     PythonEnvironment,
     PythonEnvironmentApi,
 } from '../../api';
+import { withProgress } from '../../common/window.apis';
 import { CommandConstructorOptions } from '../base/commands/index';
 import { updatePackagesAndNotify } from '../common/packageChanges';
 import { createPipOrUvCommand } from './commands/factory';
@@ -100,7 +101,10 @@ export class PipPackageManager implements PackageManager, Disposable {
                     UvUninstallCommand,
                 );
                 const packages = parsePackageSpecs(toUninstall);
-                await uninstallCmd.executeWithProgress({ packages, showProgress: true }, 'Installing packages');
+                await withProgress(
+                    { location: ProgressLocation.Notification, title: 'Installing packages', cancellable: true },
+                    (_progress, token) => uninstallCmd.execute({ packages, cancellationToken: token }),
+                );
             }
 
             // Execute install if needed
@@ -111,9 +115,10 @@ export class PipPackageManager implements PackageManager, Disposable {
                     UvInstallCommand,
                 );
                 const packages = parsePackageSpecs(toInstall);
-                await installCmd.executeWithProgress(
-                    { packages, upgrade: options.upgrade, showProgress: true },
-                    'Installing packages',
+                await withProgress(
+                    { location: ProgressLocation.Notification, title: 'Installing packages', cancellable: true },
+                    (_progress, token) =>
+                        installCmd.execute({ packages, upgrade: options.upgrade, cancellationToken: token }),
                 );
             }
 
