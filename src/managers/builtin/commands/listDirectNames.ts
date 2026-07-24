@@ -15,23 +15,6 @@ export class PipListDirectNamesCommand extends ListDirectNamesCommand {
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<string[]> {
-        let directNames: string[] = [];
-
-        const parser = (output: string): void => {
-            let packages: unknown;
-            try {
-                packages = JSON.parse(output);
-            } catch (e) {
-                this.log?.error(`Failed to parse pip list output: ${e}`);
-                return;
-            }
-            if (!Array.isArray(packages)) {
-                this.log?.error('Invalid output from pip list command');
-                return;
-            }
-            directNames = packages.filter(({ name }) => name).map(({ name }) => name);
-        };
-
         const args = this.buildCommand();
 
         const output = await runPython(
@@ -43,8 +26,19 @@ export class PipListDirectNamesCommand extends ListDirectNamesCommand {
             this.timeout,
         );
 
-        parser(output);
-        return directNames;
+        let packages: unknown;
+        try {
+            packages = JSON.parse(output);
+        } catch (e) {
+            this.log?.error(`Failed to parse pip list output: ${e}`);
+            return [];
+        }
+        if (!Array.isArray(packages)) {
+            this.log?.error('Invalid output from pip list command');
+            return [];
+        }
+
+        return packages.filter(({ name }) => !!name).map(({ name }) => name);
     }
 }
 
@@ -63,28 +57,22 @@ export class UvListDirectNamesCommand extends ListDirectNamesCommand {
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<string[]> {
-        let directNames: string[] = [];
-
-        const parser = (output: string): void => {
-            let packages: unknown;
-            try {
-                packages = JSON.parse(output);
-            } catch (e) {
-                this.log?.error(`Failed to parse uv pip list output: ${e}`);
-                return;
-            }
-            if (!Array.isArray(packages)) {
-                this.log?.error('Invalid output from uv pip list command');
-                return;
-            }
-            directNames = packages.filter(({ name }) => name).map(({ name }) => name);
-        };
-
         const args = this.buildCommand();
 
         const output = await runUV(args, undefined, this.log, executeArgs?.cancellationToken, this.timeout);
 
-        parser(output);
-        return directNames;
+        let packages: unknown;
+        try {
+            packages = JSON.parse(output);
+        } catch (e) {
+            this.log?.error(`Failed to parse uv pip list output: ${e}`);
+            return [];
+        }
+        if (!Array.isArray(packages)) {
+            this.log?.error('Invalid output from uv pip list command');
+            return [];
+        }
+
+        return packages.filter(({ name }) => !!name).map(({ name }) => name);
     }
 }

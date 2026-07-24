@@ -17,14 +17,6 @@ export class PipVersionCommand extends VersionCommand {
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<Pep440Version | undefined> {
-        let parsedVersion: Pep440Version | undefined;
-
-        const parser = (output: string): void => {
-            // "pip X.Y.Z from /path/to/pip (python X.Y)"
-            const match = output.match(/^pip\s+(\d+\.\d+(?:\.\d+)*)/);
-            parsedVersion = match ? (parsePep440Version(match[1]) ?? undefined) : undefined;
-        };
-
         const args = this.buildCommand();
 
         const output = await runPython(
@@ -36,8 +28,8 @@ export class PipVersionCommand extends VersionCommand {
             this.timeout,
         );
 
-        parser(output);
-        return parsedVersion;
+        const match = output.match(/^pip\s+(\d+\.\d+(?:\.\d+)*)/);
+        return match ? (parsePep440Version(match[1]) ?? undefined) : undefined;
     }
 }
 
@@ -56,19 +48,11 @@ export class UvVersionCommand extends VersionCommand {
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<Pep440Version | undefined> {
-        let parsedVersion: Pep440Version | undefined;
-
-        const parser = (output: string): void => {
-            // "uv X.Y.Z" format
-            const match = output.match(/(\d+\.\d+(?:\.\d+)*)/);
-            parsedVersion = match ? (parsePep440Version(match[1]) ?? undefined) : undefined;
-        };
-
         const args = this.buildCommand();
 
         const output = await runUV(args, undefined, this.log, executeArgs?.cancellationToken, this.timeout);
 
-        parser(output);
-        return parsedVersion;
+        const match = output.match(/(\d+\.\d+(?:\.\d+)*)/);
+        return match ? (parsePep440Version(match[1]) ?? undefined) : undefined;
     }
 }

@@ -16,31 +16,6 @@ export class PipListCommand extends ListCommand {
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<PackageInfo[]> {
-        const packages: PackageInfo[] = [];
-
-        const parser = (output: string): void => {
-            let json: unknown;
-            try {
-                json = JSON.parse(output);
-            } catch (e) {
-                this.log?.error(`Failed to parse pip list output: ${e}`);
-                return;
-            }
-            if (!Array.isArray(json)) {
-                this.log?.error('Invalid output from pip list command');
-                return;
-            }
-            const parsed = json
-                .filter(({ name, version }) => name && version)
-                .map(({ name, version }) => ({
-                    name,
-                    version,
-                    displayName: name,
-                    description: version,
-                }));
-            packages.push(...parsed);
-        };
-
         const args = this.buildCommand();
 
         const output = await runPython(
@@ -52,8 +27,26 @@ export class PipListCommand extends ListCommand {
             this.timeout,
         );
 
-        parser(output);
-        return packages;
+        let json: unknown;
+        try {
+            json = JSON.parse(output);
+        } catch (e) {
+            this.log?.error(`Failed to parse pip list output: ${e}`);
+            return [];
+        }
+        if (!Array.isArray(json)) {
+            this.log?.error('Invalid output from pip list command');
+            return [];
+        }
+
+        return json
+            .filter(({ name, version }) => !!name && !!version)
+            .map(({ name, version }) => ({
+                name,
+                version,
+                displayName: name,
+                description: version,
+            }));
     }
 }
 
@@ -72,36 +65,29 @@ export class UvListCommand extends ListCommand {
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<PackageInfo[]> {
-        const packages: PackageInfo[] = [];
-
-        const parser = (output: string): void => {
-            let json: unknown;
-            try {
-                json = JSON.parse(output);
-            } catch (e) {
-                this.log?.error(`Failed to parse uv pip list output: ${e}`);
-                return;
-            }
-            if (!Array.isArray(json)) {
-                this.log?.error('Invalid output from uv pip list command');
-                return;
-            }
-            const parsed = json
-                .filter(({ name, version }) => name && version)
-                .map(({ name, version }) => ({
-                    name,
-                    version,
-                    displayName: name,
-                    description: version,
-                }));
-            packages.push(...parsed);
-        };
-
         const args = this.buildCommand();
 
         const output = await runUV(args, undefined, this.log, executeArgs?.cancellationToken, this.timeout);
 
-        parser(output);
-        return packages;
+        let json: unknown;
+        try {
+            json = JSON.parse(output);
+        } catch (e) {
+            this.log?.error(`Failed to parse uv pip list output: ${e}`);
+            return [];
+        }
+        if (!Array.isArray(json)) {
+            this.log?.error('Invalid output from uv pip list command');
+            return [];
+        }
+
+        return json
+            .filter(({ name, version }) => !!name && !!version)
+            .map(({ name, version }) => ({
+                name,
+                version,
+                displayName: name,
+                description: version,
+            }));
     }
 }

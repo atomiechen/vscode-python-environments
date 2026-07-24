@@ -20,26 +20,6 @@ export class PipAvailableVersionsCommand extends AvailableVersionsCommand {
     }
 
     async execute(executeArgs: AvailableVersionsExecuteArgs): Promise<string[]> {
-        let availableVersions: string[] = [];
-
-        const parser = (output: string): void => {
-            const match = output.match(/{[\s\S]*}/);
-            if (!match) {
-                availableVersions = [];
-                return;
-            }
-            try {
-                const parsed = JSON.parse(match[0]) as { versions?: string[] };
-                let versions = Array.isArray(parsed.versions) ? parsed.versions.filter((v) => !!v.trim()) : [];
-                if (!executeArgs.includePrerelease) {
-                    versions = versions.filter((version) => !/[ab]|rc|dev/i.test(version));
-                }
-                availableVersions = versions;
-            } catch {
-                availableVersions = [];
-            }
-        };
-
         const args = this.buildCommand(executeArgs);
 
         const output = await runPython(
@@ -51,8 +31,21 @@ export class PipAvailableVersionsCommand extends AvailableVersionsCommand {
             this.timeout,
         );
 
-        parser(output);
-        return availableVersions;
+        const match = output.match(/{[\s\S]*}/);
+        if (!match) {
+            return [];
+        }
+
+        try {
+            const parsed = JSON.parse(match[0]) as { versions?: string[] };
+            let versions = Array.isArray(parsed.versions) ? parsed.versions.filter((v) => !!v.trim()) : [];
+            if (!executeArgs.includePrerelease) {
+                versions = versions.filter((version) => !/[ab]|rc|dev/i.test(version));
+            }
+            return versions;
+        } catch {
+            return [];
+        }
     }
 }
 
@@ -72,31 +65,24 @@ export class UvAvailableVersionsCommand extends AvailableVersionsCommand {
     }
 
     async execute(executeArgs: AvailableVersionsExecuteArgs): Promise<string[]> {
-        let availableVersions: string[] = [];
-
-        const parser = (output: string): void => {
-            const match = output.match(/{[\s\S]*}/);
-            if (!match) {
-                availableVersions = [];
-                return;
-            }
-            try {
-                const parsed = JSON.parse(match[0]) as { versions?: string[] };
-                let versions = Array.isArray(parsed.versions) ? parsed.versions.filter((v) => !!v.trim()) : [];
-                if (!executeArgs.includePrerelease) {
-                    versions = versions.filter((version) => !/[ab]|rc|dev/i.test(version));
-                }
-                availableVersions = versions;
-            } catch {
-                availableVersions = [];
-            }
-        };
-
         const args = this.buildCommand(executeArgs);
 
         const output = await runUV(args, undefined, this.log, executeArgs.cancellationToken, this.timeout);
 
-        parser(output);
-        return availableVersions;
+        const match = output.match(/{[\s\S]*}/);
+        if (!match) {
+            return [];
+        }
+
+        try {
+            const parsed = JSON.parse(match[0]) as { versions?: string[] };
+            let versions = Array.isArray(parsed.versions) ? parsed.versions.filter((v) => !!v.trim()) : [];
+            if (!executeArgs.includePrerelease) {
+                versions = versions.filter((version) => !/[ab]|rc|dev/i.test(version));
+            }
+            return versions;
+        } catch {
+            return [];
+        }
     }
 }
