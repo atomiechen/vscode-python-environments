@@ -1,4 +1,4 @@
-import { CommandConstructorOptions, UninstallCommand, type UninstallExecuteArgs } from '../../base/commands/index';
+import { UninstallCommand, type UninstallExecuteArgs } from '../../base/commands/index';
 import { runPython, runUV } from '../helpers';
 
 /**
@@ -7,17 +7,19 @@ import { runPython, runUV } from '../helpers';
  * Official documentation: https://pip.pypa.io/en/stable/cli/pip_uninstall/
  */
 export class PipUninstallCommand extends UninstallCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
     protected buildCommand(executeArgs: UninstallExecuteArgs): string[] {
         return ['-m', 'pip', 'uninstall', '-y', ...executeArgs.packages.map((pkg) => pkg.packageName)];
     }
 
     async execute(executeArgs: UninstallExecuteArgs): Promise<void> {
-        const args = this.buildCommand(executeArgs);
-
-        await runPython(this.pythonExecutable, args, undefined, this.log, executeArgs.cancellationToken, this.timeout);
+        await runPython(
+            this.pythonExecutable,
+            this.buildCommand(executeArgs),
+            undefined,
+            this.log,
+            executeArgs.cancellationToken,
+            this.timeout,
+        );
     }
 }
 
@@ -27,10 +29,6 @@ export class PipUninstallCommand extends UninstallCommand {
  * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvUninstallCommand extends UninstallCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(executeArgs: UninstallExecuteArgs): string[] {
         const args = ['pip', 'uninstall', '--python', this.pythonExecutable];
         args.push(...executeArgs.packages.map((pkg) => pkg.packageName));
@@ -38,8 +36,6 @@ export class UvUninstallCommand extends UninstallCommand {
     }
 
     async execute(executeArgs: UninstallExecuteArgs): Promise<void> {
-        const args = this.buildCommand(executeArgs);
-
-        await runUV(args, undefined, this.log, executeArgs.cancellationToken, this.timeout);
+        await runUV(this.buildCommand(executeArgs), undefined, this.log, executeArgs.cancellationToken, this.timeout);
     }
 }

@@ -1,5 +1,5 @@
 import { PackageInfo } from '../../../api';
-import { CommandConstructorOptions, ListCommand, type BaseExecuteArgs } from '../../base/commands/index';
+import { ListCommand, type BaseExecuteArgs } from '../../base/commands/index';
 import { runPython, runUV } from '../helpers';
 
 /**
@@ -8,19 +8,14 @@ import { runPython, runUV } from '../helpers';
  * Official documentation: https://pip.pypa.io/en/stable/cli/pip_list/
  */
 export class PipListCommand extends ListCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
     protected buildCommand(): string[] {
         return ['-m', 'pip', 'list', '--format=json'];
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<PackageInfo[]> {
-        const args = this.buildCommand();
-
         const output = await runPython(
             this.pythonExecutable,
-            args,
+            this.buildCommand(),
             undefined,
             this.log,
             executeArgs?.cancellationToken,
@@ -56,18 +51,18 @@ export class PipListCommand extends ListCommand {
  * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvListCommand extends ListCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(): string[] {
         return ['pip', 'list', '--format=json', '--python', this.pythonExecutable];
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<PackageInfo[]> {
-        const args = this.buildCommand();
-
-        const output = await runUV(args, undefined, this.log, executeArgs?.cancellationToken, this.timeout);
+        const output = await runUV(
+            this.buildCommand(),
+            undefined,
+            this.log,
+            executeArgs?.cancellationToken,
+            this.timeout,
+        );
 
         let json: unknown;
         try {

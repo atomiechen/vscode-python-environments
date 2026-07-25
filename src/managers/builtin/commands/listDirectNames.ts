@@ -1,4 +1,4 @@
-import { CommandConstructorOptions, ListDirectNamesCommand, type BaseExecuteArgs } from '../../base/commands/index';
+import { ListDirectNamesCommand, type BaseExecuteArgs } from '../../base/commands/index';
 import { runPython, runUV } from '../helpers';
 import { normalizePackageName } from '../utils';
 
@@ -8,19 +8,14 @@ import { normalizePackageName } from '../utils';
  * Official documentation: https://pip.pypa.io/en/stable/cli/pip_list/
  */
 export class PipListDirectNamesCommand extends ListDirectNamesCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
     protected buildCommand(): string[] {
         return ['-m', 'pip', 'list', '--format=json', '--not-required'];
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<Set<string>> {
-        const args = this.buildCommand();
-
         const output = await runPython(
             this.pythonExecutable,
-            args,
+            this.buildCommand(),
             undefined,
             this.log,
             executeArgs?.cancellationToken,
@@ -49,18 +44,18 @@ export class PipListDirectNamesCommand extends ListDirectNamesCommand {
  * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvListDirectNamesCommand extends ListDirectNamesCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(): string[] {
-        return ['pip', 'tree', '--depth', '0', '--python', this.pythonExecutable];
+        return ['pip', 'tree', '--depth', '1'];
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<Set<string>> {
-        const args = this.buildCommand();
-
-        const output = await runUV(args, undefined, this.log, executeArgs?.cancellationToken, this.timeout);
+        const output = await runUV(
+            this.buildCommand(),
+            undefined,
+            this.log,
+            executeArgs?.cancellationToken,
+            this.timeout,
+        );
 
         const packageNames = new Set<string>();
         const lines = output.split('\n');

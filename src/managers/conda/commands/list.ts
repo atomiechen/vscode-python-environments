@@ -21,8 +21,7 @@ export class CondaListCommand extends ListCommand {
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<PackageInfo[]> {
-        const cmdArgs = this.buildCommand();
-        const output = await runCondaExecutable(cmdArgs, this.log, executeArgs?.cancellationToken);
+        const output = await runCondaExecutable(this.buildCommand(), this.log, executeArgs?.cancellationToken);
 
         let condaPackages: { name: string; version: string }[];
         try {

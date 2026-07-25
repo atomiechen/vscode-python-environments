@@ -39,18 +39,12 @@ export class PipVersionCommand extends VersionCommand {
  * Official documentation: https://docs.astral.sh/uv/
  */
 export class UvVersionCommand extends VersionCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(): string[] {
         return ['--version'];
     }
 
-    async execute(executeArgs?: BaseExecuteArgs): Promise<Pep440Version | undefined> {
-        const args = this.buildCommand();
-
-        const output = await runUV(args, undefined, this.log, executeArgs?.cancellationToken, this.timeout);
+    async execute(): Promise<Pep440Version | undefined> {
+        const output = await runUV(this.buildCommand(), undefined, this.log, undefined, this.timeout);
 
         const match = output.match(/(\d+\.\d+(?:\.\d+)*)/);
         return match ? (parsePep440Version(match[1]) ?? undefined) : undefined;

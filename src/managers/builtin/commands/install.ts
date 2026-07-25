@@ -1,4 +1,4 @@
-import { CommandConstructorOptions, InstallCommand, type InstallExecuteArgs } from '../../base/commands/index';
+import { InstallCommand, type InstallExecuteArgs } from '../../base/commands/index';
 import { runPython, runUV } from '../helpers';
 import { processEditableInstallArgs } from '../utils';
 
@@ -8,10 +8,6 @@ import { processEditableInstallArgs } from '../utils';
  * Official documentation: https://pip.pypa.io/en/stable/cli/pip_install/
  */
 export class PipInstallCommand extends InstallCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(executeArgs: InstallExecuteArgs): string[] {
         let args = ['-m', 'pip', 'install'];
 
@@ -26,9 +22,14 @@ export class PipInstallCommand extends InstallCommand {
     }
 
     async execute(executeArgs: InstallExecuteArgs): Promise<void> {
-        const args = this.buildCommand(executeArgs);
-
-        await runPython(this.pythonExecutable, args, undefined, this.log, executeArgs.cancellationToken, this.timeout);
+        await runPython(
+            this.pythonExecutable,
+            this.buildCommand(executeArgs),
+            undefined,
+            this.log,
+            executeArgs.cancellationToken,
+            this.timeout,
+        );
     }
 }
 
@@ -38,10 +39,6 @@ export class PipInstallCommand extends InstallCommand {
  * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvInstallCommand extends InstallCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(executeArgs: InstallExecuteArgs): string[] {
         let args = ['pip', 'install', '--python', this.pythonExecutable];
 
@@ -56,8 +53,6 @@ export class UvInstallCommand extends InstallCommand {
     }
 
     async execute(executeArgs: InstallExecuteArgs): Promise<void> {
-        const args = this.buildCommand(executeArgs);
-
-        await runUV(args, undefined, this.log, executeArgs.cancellationToken, this.timeout);
+        await runUV(this.buildCommand(executeArgs), undefined, this.log, executeArgs.cancellationToken, this.timeout);
     }
 }

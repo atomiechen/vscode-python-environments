@@ -1,4 +1,4 @@
-import { CommandConstructorOptions, InstallCommand, type InstallExecuteArgs } from '../../base/commands/index';
+import { InstallCommand, type InstallExecuteArgs } from '../../base/commands/index';
 import { runPoetry } from '../poetryUtils';
 
 /**
@@ -7,10 +7,6 @@ import { runPoetry } from '../poetryUtils';
  * Official documentation: https://python-poetry.org/docs/cli/#add
  */
 export class PoetryAddCommand extends InstallCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(executeArgs: InstallExecuteArgs): string[] {
         const args = ['add'];
 
@@ -31,7 +27,6 @@ export class PoetryAddCommand extends InstallCommand {
     }
 
     async execute(executeArgs: InstallExecuteArgs): Promise<void> {
-        const args = this.buildCommand(executeArgs);
-        await runPoetry(args, undefined, this.log, executeArgs.cancellationToken);
+        await runPoetry(this.buildCommand(executeArgs), undefined, this.log, executeArgs.cancellationToken);
     }
 }

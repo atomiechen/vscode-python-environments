@@ -1,4 +1,4 @@
-import { CommandConstructorOptions, ListDirectNamesCommand, type BaseExecuteArgs } from '../../base/commands/index';
+import { ListDirectNamesCommand, type BaseExecuteArgs } from '../../base/commands/index';
 import { normalizePackageName } from '../../builtin/utils';
 import { runPoetry } from '../poetryUtils';
 
@@ -12,17 +12,12 @@ export interface PoetryShowTopLevelExecuteArgs extends BaseExecuteArgs {
  * Official documentation: https://python-poetry.org/docs/cli/#show
  */
 export class PoetryShowTopLevelCommand extends ListDirectNamesCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(): string[] {
         return ['show', '--no-ansi', '--top-level'];
     }
 
     async execute(executeArgs?: PoetryShowTopLevelExecuteArgs): Promise<Set<string>> {
-        const args = this.buildCommand();
-        const output = await runPoetry(args, executeArgs?.cwd, this.log, executeArgs?.cancellationToken);
+        const output = await runPoetry(this.buildCommand(), executeArgs?.cwd, this.log, executeArgs?.cancellationToken);
 
         try {
             const names = output

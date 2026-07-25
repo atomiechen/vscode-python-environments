@@ -20,8 +20,11 @@ export class CondaAvailableVersionsCommand extends AvailableVersionsCommand {
     }
 
     async execute(executeArgs: AvailableVersionsExecuteArgs): Promise<string[]> {
-        const args = this.buildCommand(executeArgs);
-        const output = await runCondaExecutable(args, this.log, executeArgs.cancellationToken);
+        const output = await runCondaExecutable(
+            this.buildCommand(executeArgs),
+            this.log,
+            executeArgs.cancellationToken,
+        );
 
         try {
             const parsed = JSON.parse(output);

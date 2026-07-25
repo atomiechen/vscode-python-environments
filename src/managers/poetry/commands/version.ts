@@ -1,6 +1,6 @@
 import type { Pep440Version } from '@renovatebot/pep440';
 import { explain as parsePep440Version } from '@renovatebot/pep440';
-import { CommandConstructorOptions, VersionCommand, type BaseExecuteArgs } from '../../base/commands/index';
+import { VersionCommand, type BaseExecuteArgs } from '../../base/commands/index';
 import { getPoetryVersion } from '../poetryUtils';
 
 /**
@@ -9,10 +9,6 @@ import { getPoetryVersion } from '../poetryUtils';
  * Official documentation: https://python-poetry.org/docs/cli/#options
  */
 export class PoetryVersionCommand extends VersionCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(): string[] {
         return ['--version'];
     }

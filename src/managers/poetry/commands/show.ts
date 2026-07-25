@@ -1,5 +1,5 @@
 import { PackageInfo } from '../../../api';
-import { CommandConstructorOptions, ListCommand, type BaseExecuteArgs } from '../../base/commands/index';
+import { ListCommand, type BaseExecuteArgs } from '../../base/commands/index';
 import { runPoetry } from '../poetryUtils';
 
 export interface PoetryShowExecuteArgs extends BaseExecuteArgs {
@@ -12,17 +12,12 @@ export interface PoetryShowExecuteArgs extends BaseExecuteArgs {
  * Official documentation: https://python-poetry.org/docs/cli/#show
  */
 export class PoetryShowCommand extends ListCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(): string[] {
         return ['show', '--no-ansi'];
     }
 
     async execute(executeArgs?: PoetryShowExecuteArgs): Promise<PackageInfo[]> {
-        const args = this.buildCommand();
-        const output = await runPoetry(args, executeArgs?.cwd, this.log, executeArgs?.cancellationToken);
+        const output = await runPoetry(this.buildCommand(), executeArgs?.cwd, this.log, executeArgs?.cancellationToken);
 
         const packages: PackageInfo[] = [];
 

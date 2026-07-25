@@ -18,5 +18,13 @@ export abstract class AvailableVersionsCommand extends PackageManagerCommand {
 
     protected abstract buildCommand(executeArgs: AvailableVersionsExecuteArgs): string[];
 
+    protected filterVersions(versions: string[], includePrerelease?: boolean): string[] {
+        let filtered = versions.filter((v) => !!v.trim());
+        if (!includePrerelease) {
+            filtered = filtered.filter((version) => !/[ab]|rc|dev/i.test(version));
+        }
+        return filtered;
+    }
+
     abstract execute(executeArgs: AvailableVersionsExecuteArgs): Promise<string[]>;
 }

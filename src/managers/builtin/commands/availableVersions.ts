@@ -1,8 +1,4 @@
-import {
-    AvailableVersionsCommand,
-    CommandConstructorOptions,
-    type AvailableVersionsExecuteArgs,
-} from '../../base/commands/index';
+import { AvailableVersionsCommand, type AvailableVersionsExecuteArgs } from '../../base/commands/index';
 import { runPython, runUV } from '../helpers';
 
 /**
@@ -11,20 +7,15 @@ import { runPython, runUV } from '../helpers';
  * Official documentation: https://pip.pypa.io/en/stable/cli/pip_index/
  */
 export class PipAvailableVersionsCommand extends AvailableVersionsCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
     protected buildCommand(executeArgs: AvailableVersionsExecuteArgs): string[] {
         const baseVersion = executeArgs.pythonVersion.split('.').slice(0, 2).join('.');
         return ['-m', 'pip', 'index', 'versions', executeArgs.packageName, '--json', '--python-version', baseVersion];
     }
 
     async execute(executeArgs: AvailableVersionsExecuteArgs): Promise<string[]> {
-        const args = this.buildCommand(executeArgs);
-
         const output = await runPython(
             this.pythonExecutable,
-            args,
+            this.buildCommand(executeArgs),
             undefined,
             this.log,
             executeArgs.cancellationToken,
@@ -38,11 +29,10 @@ export class PipAvailableVersionsCommand extends AvailableVersionsCommand {
 
         try {
             const parsed = JSON.parse(match[0]) as { versions?: string[] };
-            let versions = Array.isArray(parsed.versions) ? parsed.versions.filter((v) => !!v.trim()) : [];
-            if (!executeArgs.includePrerelease) {
-                versions = versions.filter((version) => !/[ab]|rc|dev/i.test(version));
-            }
-            return versions;
+            return this.filterVersions(
+                Array.isArray(parsed.versions) ? parsed.versions : [],
+                executeArgs.includePrerelease,
+            );
         } catch {
             return [];
         }
@@ -55,10 +45,6 @@ export class PipAvailableVersionsCommand extends AvailableVersionsCommand {
  * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvAvailableVersionsCommand extends AvailableVersionsCommand {
-    constructor(options: CommandConstructorOptions) {
-        super(options);
-    }
-
     protected buildCommand(executeArgs: AvailableVersionsExecuteArgs): string[] {
         const baseVersion = executeArgs.pythonVersion.split('.').slice(0, 2).join('.');
         return [
@@ -75,9 +61,13 @@ export class UvAvailableVersionsCommand extends AvailableVersionsCommand {
     }
 
     async execute(executeArgs: AvailableVersionsExecuteArgs): Promise<string[]> {
-        const args = this.buildCommand(executeArgs);
-
-        const output = await runUV(args, undefined, this.log, executeArgs.cancellationToken, this.timeout);
+        const output = await runUV(
+            this.buildCommand(executeArgs),
+            undefined,
+            this.log,
+            executeArgs.cancellationToken,
+            this.timeout,
+        );
 
         const match = output.match(/{[\s\S]*}/);
         if (!match) {
@@ -86,11 +76,10 @@ export class UvAvailableVersionsCommand extends AvailableVersionsCommand {
 
         try {
             const parsed = JSON.parse(match[0]) as { versions?: string[] };
-            let versions = Array.isArray(parsed.versions) ? parsed.versions.filter((v) => !!v.trim()) : [];
-            if (!executeArgs.includePrerelease) {
-                versions = versions.filter((version) => !/[ab]|rc|dev/i.test(version));
-            }
-            return versions;
+            return this.filterVersions(
+                Array.isArray(parsed.versions) ? parsed.versions : [],
+                executeArgs.includePrerelease,
+            );
         } catch {
             return [];
         }
