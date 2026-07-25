@@ -8,7 +8,7 @@ import { runCondaExecutable } from '../condaUtils';
 /**
  * Conda available versions command.
  * Parsed command: `conda search <package> --json`
- * Official documentation: https://conda.io/projects/conda/en/latest/commands/search.html
+ * Official documentation: https://docs.conda.io/projects/conda/en/latest/commands/search.html
  */
 export class CondaAvailableVersionsCommand extends AvailableVersionsCommand {
     constructor(options: CommandConstructorOptions) {

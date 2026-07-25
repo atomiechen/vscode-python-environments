@@ -61,7 +61,17 @@ export class UvAvailableVersionsCommand extends AvailableVersionsCommand {
 
     protected buildCommand(executeArgs: AvailableVersionsExecuteArgs): string[] {
         const baseVersion = executeArgs.pythonVersion.split('.').slice(0, 2).join('.');
-        return ['pip', 'index', 'versions', executeArgs.packageName, '--json', '--python-version', baseVersion];
+        return [
+            'tool',
+            'run',
+            'pip',
+            'index',
+            'versions',
+            executeArgs.packageName,
+            '--json',
+            '--python-version',
+            baseVersion,
+        ];
     }
 
     async execute(executeArgs: AvailableVersionsExecuteArgs): Promise<string[]> {

@@ -30,7 +30,7 @@ suite('PipAvailableVersionsCommand - parsing', () => {
     test('parses valid JSON with a versions array', async () => {
         runPythonStub.resolves(JSON.stringify({ package: 'requests', versions: ['2.31.0', '2.30.0', '2.29.0'] }));
 
-        const result = await createCommand().baseExecute({ packageName: 'requests', pythonVersion: '3.11.0' });
+        const result = await createCommand().execute({ packageName: 'requests', pythonVersion: '3.11.0' });
 
         assert.deepStrictEqual(result, ['2.31.0', '2.30.0', '2.29.0']);
     });
@@ -38,7 +38,7 @@ suite('PipAvailableVersionsCommand - parsing', () => {
     test('filters prerelease versions by default', async () => {
         runPythonStub.resolves(JSON.stringify({ versions: ['2.0.0', '2.1.0b1', '2.1.0rc1', '2.1.0.dev0', '1.9.0'] }));
 
-        const result = await createCommand().baseExecute({ packageName: 'pkg', pythonVersion: '3.11.0' });
+        const result = await createCommand().execute({ packageName: 'pkg', pythonVersion: '3.11.0' });
 
         assert.deepStrictEqual(result, ['2.0.0', '1.9.0']);
     });
@@ -46,7 +46,7 @@ suite('PipAvailableVersionsCommand - parsing', () => {
     test('includes prerelease versions when requested', async () => {
         runPythonStub.resolves(JSON.stringify({ versions: ['2.0.0', '2.1.0b1'] }));
 
-        const result = await createCommand().baseExecute({
+        const result = await createCommand().execute({
             packageName: 'pkg',
             pythonVersion: '3.11.0',
             includePrerelease: true,
@@ -58,7 +58,7 @@ suite('PipAvailableVersionsCommand - parsing', () => {
     test('extracts JSON embedded in surrounding text', async () => {
         runPythonStub.resolves('WARNING: pip banner\n' + JSON.stringify({ versions: ['1.0.0'] }) + '\n');
 
-        const result = await createCommand().baseExecute({ packageName: 'pkg', pythonVersion: '3.11.0' });
+        const result = await createCommand().execute({ packageName: 'pkg', pythonVersion: '3.11.0' });
 
         assert.deepStrictEqual(result, ['1.0.0']);
     });
@@ -66,7 +66,7 @@ suite('PipAvailableVersionsCommand - parsing', () => {
     test('returns empty array for invalid JSON', async () => {
         runPythonStub.resolves('not json at all');
 
-        const result = await createCommand().baseExecute({ packageName: 'pkg', pythonVersion: '3.11.0' });
+        const result = await createCommand().execute({ packageName: 'pkg', pythonVersion: '3.11.0' });
 
         assert.deepStrictEqual(result, []);
     });
@@ -74,7 +74,7 @@ suite('PipAvailableVersionsCommand - parsing', () => {
     test('returns empty array for an empty versions array', async () => {
         runPythonStub.resolves(JSON.stringify({ versions: [] }));
 
-        const result = await createCommand().baseExecute({ packageName: 'pkg', pythonVersion: '3.11.0' });
+        const result = await createCommand().execute({ packageName: 'pkg', pythonVersion: '3.11.0' });
 
         assert.deepStrictEqual(result, []);
     });
@@ -82,7 +82,7 @@ suite('PipAvailableVersionsCommand - parsing', () => {
     test('returns empty array when versions field is missing', async () => {
         runPythonStub.resolves(JSON.stringify({ package: 'pkg' }));
 
-        const result = await createCommand().baseExecute({ packageName: 'pkg', pythonVersion: '3.11.0' });
+        const result = await createCommand().execute({ packageName: 'pkg', pythonVersion: '3.11.0' });
 
         assert.deepStrictEqual(result, []);
     });

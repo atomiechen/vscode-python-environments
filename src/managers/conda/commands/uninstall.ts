@@ -5,7 +5,7 @@ import { CondaCommandConstructorOptions } from './condaCommandOptions';
 /**
  * Conda uninstall command.
  * Parsed command: `conda remove -y -p <environment_path> <package>`
- * Official documentation: https://conda.io/projects/conda/en/latest/commands/remove.html
+ * Official documentation: https://docs.conda.io/projects/conda/en/latest/commands/remove.html
  */
 export class CondaUninstallCommand extends UninstallCommand {
     private readonly condaEnvironmentPath: string;

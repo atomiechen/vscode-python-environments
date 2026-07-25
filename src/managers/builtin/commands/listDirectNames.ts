@@ -45,7 +45,7 @@ export class PipListDirectNamesCommand extends ListDirectNamesCommand {
 
 /**
  * UV list direct names command.
- * Parsed command: `uv pip list --format=json --not-required --python <path>`
+ * Parsed command: `uv pip tree --depth 1`
  * Official documentation: https://docs.astral.sh/uv/pip/
  */
 export class UvListDirectNamesCommand extends ListDirectNamesCommand {
@@ -54,7 +54,7 @@ export class UvListDirectNamesCommand extends ListDirectNamesCommand {
     }
 
     protected buildCommand(): string[] {
-        return ['pip', 'list', '--format=json', '--not-required', '--python', this.pythonExecutable];
+        return ['pip', 'tree', '--depth', '0', '--python', this.pythonExecutable];
     }
 
     async execute(executeArgs?: BaseExecuteArgs): Promise<Set<string>> {
@@ -62,18 +62,24 @@ export class UvListDirectNamesCommand extends ListDirectNamesCommand {
 
         const output = await runUV(args, undefined, this.log, executeArgs?.cancellationToken, this.timeout);
 
-        let packages: unknown;
-        try {
-            packages = JSON.parse(output);
-        } catch (e) {
-            this.log?.error(`Failed to parse uv pip list output: ${e}`);
-            return new Set();
-        }
-        if (!Array.isArray(packages)) {
-            this.log?.error('Invalid output from uv pip list command');
-            return new Set();
+        const packageNames = new Set<string>();
+        const lines = output.split('\n');
+
+        for (const line of lines) {
+            // Tree output has top-level packages at the start of the line with no indentation
+            // Dependencies are indented with tree characters (├, └, │, etc.)
+            // We only want lines that start with a package name (not whitespace or tree chars)
+            if (line.length === 0 || /^[\s├└│]/.test(line)) {
+                continue;
+            }
+
+            // Extract package name (first word, before space or end of line)
+            const match = line.match(/^(\S+)/);
+            if (match && match[1]) {
+                packageNames.add(normalizePackageName(match[1]));
+            }
         }
 
-        return new Set(packages.filter(({ name }) => !!name).map(({ name }) => normalizePackageName(name)));
+        return packageNames;
     }
 }

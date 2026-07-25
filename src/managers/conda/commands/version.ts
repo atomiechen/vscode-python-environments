@@ -6,7 +6,7 @@ import { runCondaExecutable } from '../condaUtils';
 /**
  * Conda version command.
  * Parsed command: `conda --version`
- * Official documentation: https://conda.io/projects/conda/en/latest/commands.html
+ * Official documentation: https://docs.conda.io/projects/conda/en/latest/commands.html
  */
 export class CondaVersionCommand extends VersionCommand {
     constructor(options: CommandConstructorOptions) {

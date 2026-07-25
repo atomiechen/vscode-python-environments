@@ -6,7 +6,7 @@ import { CondaCommandConstructorOptions } from './condaCommandOptions';
 /**
  * Conda list command.
  * Parsed command: `conda list -p <environment_path> --json`
- * Official documentation: https://conda.io/projects/conda/en/latest/commands/list.html
+ * Official documentation: https://docs.conda.io/projects/conda/en/latest/commands/list.html
  */
 export class CondaListCommand extends ListCommand {
     private readonly condaEnvironmentPath: string;

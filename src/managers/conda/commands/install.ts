@@ -6,7 +6,7 @@ import { CondaCommandConstructorOptions } from './condaCommandOptions';
  * Conda install command.
  * Parsed command: `conda install -y -p <environment_path> <package>`
  * Parsed command (upgrade): `conda update -y -p <environment_path> <package>`
- * Official documentation: https://conda.io/projects/conda/en/latest/commands/install.html
+ * Official documentation: https://docs.conda.io/projects/conda/en/latest/commands/install.html
  */
 export class CondaInstallCommand extends InstallCommand {
     private readonly condaEnvironmentPath: string;

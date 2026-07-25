@@ -209,7 +209,11 @@ export class PipPackageManager implements PackageManager, Disposable {
                 return undefined;
             }
 
-            const baseVersion = parse(environment.version)?.base_version;
+            // Normalize versions like '3.13.1.final.0' (Python's sys.version_info format) to '3.13.1'
+            // before parsing, since pep440 only accepts valid PEP 440 version strings.
+            const versionMatch = (environment.version ?? '').match(/^(\d+(?:\.\d+)*)/);
+            const normalizedVersion = versionMatch?.[1] ?? '';
+            const baseVersion = parse(normalizedVersion)?.base_version;
             if (!baseVersion) {
                 return undefined;
             }
